@@ -27,7 +27,7 @@ security:
   - OAuth2: []
 tags:
   - name: Partners
-    description: Manage partner records on the Open Platform.
+    description: Manage partner records on the Open Platform demo account.
   - name: Connections
     description: OAuth-based connections between a partner and a tenant.
   - name: Webhooks
