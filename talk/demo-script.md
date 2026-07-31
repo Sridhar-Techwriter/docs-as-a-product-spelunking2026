@@ -32,8 +32,8 @@ OpenAPI change from scratch under pressure.
 
 4. Have three windows/tabs pre-arranged and ready to alt-tab between:
    - **Editor** open to `demo/openapi/orbit-platform-api.yaml`, scrolled to the `Webhook` schema (around the `WebhookCreateRequest` section).
-   - **Browser tab A**: the live docs preview, scrolled/navigated to the `Webhook` schema section.
-   - **Browser tab B** (optional stretch goal): a pre-run successful GitHub Actions run for `publish-docs.yml`, and/or the deployed GitHub Pages docs URL, as your "in production" proof point.
+   - **Browser tab A**: the live docs preview (local), scrolled/navigated to the `Webhook` schema section.
+   - **Browser tab B**: the real, live deployed docs site — https://sridhar-techwriter.github.io/docs-as-a-product-spelunking2026/ — as your "in production" proof point. This is a genuine GitHub Actions pipeline that lints, builds, and deploys on every push; it is not a mockup.
    - Have `talk/demo-backup.png` (a screenshot of the end-state docs) open in a Preview window as a silent fallback if live editing breaks.
 
 5. Zoom in! Bump your editor and browser font size up (18–20pt+) before you start — this is the single most common live-demo failure (nobody in row 10 can read 12pt text).
@@ -84,7 +84,7 @@ Save the file. Switch to the browser preview tab. It should auto-refresh within 
 Say: "That's it. That's the whole 'documentation update.' No writer typed a word. No ticket got filed. The description you're reading came from the same file the engineer just edited."
 
 **Step 4 — Connect to production (30–45s)**
-Switch to the GitHub Actions workflow file (`.github/workflows/publish-docs.yml`) or the pre-run Actions success screenshot / live Pages URL. Say: "Locally this took a second because Redocly watches the file. In production, this exact same spec change triggers our CI/CD pipeline — it lints the spec, rebuilds the docs site, and redeploys it to our public developer portal automatically, on every merge to main."
+Switch to Browser tab B, the real deployed site at https://sridhar-techwriter.github.io/docs-as-a-product-spelunking2026/. Say: "Locally this took a second because Redocly watches the file. This site right here is not a mockup — it's deployed by a real GitHub Actions pipeline that lints the spec, rebuilds the docs, and redeploys it automatically on every push to main." Optionally flip to the **Actions** tab in the repo to show the green checkmark run.
 
 **Step 5 — Land it (10s)**
 Say: "One file changed. Zero manual docs work. That's Docs-as-a-Product." Switch back to slides.

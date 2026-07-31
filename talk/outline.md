@@ -142,7 +142,7 @@ Close on the emotional hook from slide 2, then explicitly invite people to grab 
 
 ## Slide 12 — Thank You / Q&A (16:30–18:00+)
 
-**On slide:** "Thank you" + repo link/QR code + your name/contact + "Questions?"
+**On slide:** "Thank you" + QR code linking to https://sridhar-techwriter.github.io/docs-as-a-product-spelunking2026/ + your name/contact + "Questions?"
 
 **Say:**
 Open the floor. Have 2–3 anticipated Q&A answers ready (see below).

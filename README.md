@@ -26,6 +26,10 @@ This repo *is* the proof of concept for the talk: a fictional OpenAPI spec
 becomes a published developer docs site whenever the spec changes — no
 manual doc editing, ever.
 
+**Live demo site:** https://sridhar-techwriter.github.io/docs-as-a-product-spelunking2026/
+(deployed automatically by [`.github/workflows/publish-docs.yml`](.github/workflows/publish-docs.yml)
+on every push to `main`)
+
 ## Quick start
 
 ```bash
