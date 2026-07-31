@@ -1,0 +1,18 @@
+# Redocly CLI configuration for the Orbit Platform API demo.
+# https://redocly.com/docs/cli/configuration
+
+apis:
+  orbit@v1:
+    root: openapi/orbit-platform-api.yaml
+
+extends:
+  - minimal
+
+theme:
+  openapi:
+    theme:
+      colors:
+        primary:
+          main: "#f62d5f"
+    hideDownloadButton: false
+    disableSearch: false

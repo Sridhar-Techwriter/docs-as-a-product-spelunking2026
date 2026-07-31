@@ -1,0 +1,412 @@
+openapi: 3.0.3
+info:
+  title: Orbit Platform API
+  version: "1.0.0"
+  description: |
+    **Orbit** is a fictional stand-in for Workday's Open Platform APIs, built purely
+    for the "Docs-as-a-Product" Spelunking 2026 demo.
+
+    It models a common Open Platform pattern: partners connect to the platform,
+    register webhooks, and subscribe to events — the same shape as most
+    partner-integration surfaces.
+
+    This spec is the **single source of truth** for the public developer docs.
+    Any change made here is picked up automatically by the documentation
+    pipeline — nobody hand-edits a docs page.
+  contact:
+    name: Open Platform Developer Experience
+    url: https://developer.example-orbit.workday.com
+  license:
+    name: Internal Use — Demo Only
+servers:
+  - url: https://api.example-orbit.workday.com/v1
+    description: Production (fictional)
+  - url: https://api.sandbox.example-orbit.workday.com/v1
+    description: Sandbox (fictional)
+security:
+  - OAuth2: []
+tags:
+  - name: Partners
+    description: Manage partner records on the Open Platform.
+  - name: Connections
+    description: OAuth-based connections between a partner and a tenant.
+  - name: Webhooks
+    description: Register and manage webhook subscriptions.
+  - name: Events
+    description: Discover events available for webhook subscription.
+paths:
+  /partners:
+    get:
+      operationId: listPartners
+      tags: [Partners]
+      summary: List partners
+      description: Returns all partners registered on the Open Platform.
+      responses:
+        "200":
+          description: A list of partners.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Partner"
+    post:
+      operationId: createPartner
+      tags: [Partners]
+      summary: Register a new partner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartnerCreateRequest"
+      responses:
+        "201":
+          description: Partner created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Partner"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /partners/{partnerId}:
+    get:
+      operationId: getPartner
+      tags: [Partners]
+      summary: Get a partner by ID
+      parameters:
+        - $ref: "#/components/parameters/PartnerId"
+      responses:
+        "200":
+          description: The requested partner.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Partner"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /connections:
+    get:
+      operationId: listConnections
+      tags: [Connections]
+      summary: List connections
+      description: Returns all active OAuth connections between partners and tenants.
+      responses:
+        "200":
+          description: A list of connections.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Connection"
+    post:
+      operationId: createConnection
+      tags: [Connections]
+      summary: Create a connection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConnectionCreateRequest"
+      responses:
+        "201":
+          description: Connection created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Connection"
+
+  /connections/{connectionId}:
+    get:
+      operationId: getConnection
+      tags: [Connections]
+      summary: Get a connection by ID
+      parameters:
+        - $ref: "#/components/parameters/ConnectionId"
+      responses:
+        "200":
+          description: The requested connection.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Connection"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      operationId: deleteConnection
+      tags: [Connections]
+      summary: Revoke a connection
+      parameters:
+        - $ref: "#/components/parameters/ConnectionId"
+      responses:
+        "204":
+          description: Connection revoked.
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /webhooks:
+    get:
+      operationId: listWebhooks
+      tags: [Webhooks]
+      summary: List webhook subscriptions
+      responses:
+        "200":
+          description: A list of webhook subscriptions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Webhook"
+    post:
+      operationId: createWebhook
+      tags: [Webhooks]
+      summary: Register a webhook subscription
+      description: |
+        Registers a new webhook for a partner. The webhook fires whenever a
+        subscribed event occurs on the platform.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookCreateRequest"
+      responses:
+        "201":
+          description: Webhook created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Webhook"
+
+  /webhooks/{webhookId}:
+    get:
+      operationId: getWebhook
+      tags: [Webhooks]
+      summary: Get a webhook subscription by ID
+      parameters:
+        - $ref: "#/components/parameters/WebhookId"
+      responses:
+        "200":
+          description: The requested webhook subscription.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Webhook"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      operationId: deleteWebhook
+      tags: [Webhooks]
+      summary: Remove a webhook subscription
+      parameters:
+        - $ref: "#/components/parameters/WebhookId"
+      responses:
+        "204":
+          description: Webhook removed.
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /events:
+    get:
+      operationId: listEvents
+      tags: [Events]
+      summary: List subscribable events
+      description: Returns the catalog of events partners can subscribe to via webhooks.
+      responses:
+        "200":
+          description: A list of events.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: Standard OAuth 2.0 client-credentials flow used by all Orbit partner connections.
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.example-orbit.workday.com/oauth2/token
+          scopes:
+            read:webhooks: Read webhook subscriptions
+            write:webhooks: Create and manage webhook subscriptions
+            read:partners: Read partner records
+            write:partners: Create and manage partner records
+
+  parameters:
+    PartnerId:
+      name: partnerId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: partner_8842
+    ConnectionId:
+      name: connectionId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: conn_5f21
+    WebhookId:
+      name: webhookId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: whk_3a90
+
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    BadRequest:
+      description: The request was invalid.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Partner:
+      type: object
+      properties:
+        id:
+          type: string
+          example: partner_8842
+        name:
+          type: string
+          example: Acme Integrations Inc.
+        status:
+          type: string
+          enum: [pending, active, suspended]
+          example: active
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, name, status]
+
+    PartnerCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Acme Integrations Inc.
+        contactEmail:
+          type: string
+          format: email
+          example: integrations@acme.example.com
+      required: [name, contactEmail]
+
+    Connection:
+      type: object
+      properties:
+        id:
+          type: string
+          example: conn_5f21
+        partnerId:
+          type: string
+          example: partner_8842
+        tenantId:
+          type: string
+          example: tenant_workday_demo
+        scopes:
+          type: array
+          items:
+            type: string
+          example: ["read:workers", "read:jobs"]
+        status:
+          type: string
+          enum: [active, revoked]
+          example: active
+      required: [id, partnerId, tenantId, status]
+
+    ConnectionCreateRequest:
+      type: object
+      properties:
+        partnerId:
+          type: string
+          example: partner_8842
+        tenantId:
+          type: string
+          example: tenant_workday_demo
+        scopes:
+          type: array
+          items:
+            type: string
+      required: [partnerId, tenantId, scopes]
+
+    Webhook:
+      type: object
+      description: A registered webhook subscription for a partner.
+      properties:
+        id:
+          type: string
+          example: whk_3a90
+        partnerId:
+          type: string
+          example: partner_8842
+        targetUrl:
+          type: string
+          format: uri
+          example: https://acme.example.com/hooks/orbit
+        eventTypes:
+          type: array
+          items:
+            type: string
+          example: ["worker.hired", "job.posted"]
+        status:
+          type: string
+          enum: [active, paused]
+          example: active
+      required: [id, partnerId, targetUrl, eventTypes, status]
+
+    WebhookCreateRequest:
+      type: object
+      properties:
+        partnerId:
+          type: string
+          example: partner_8842
+        targetUrl:
+          type: string
+          format: uri
+          example: https://acme.example.com/hooks/orbit
+        eventTypes:
+          type: array
+          items:
+            type: string
+          example: ["worker.hired", "job.posted"]
+      required: [partnerId, targetUrl, eventTypes]
+
+    Event:
+      type: object
+      properties:
+        type:
+          type: string
+          example: worker.hired
+        description:
+          type: string
+          example: Fires when a new worker is hired in a subscribed tenant.
+      required: [type, description]
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          example: not_found
+        message:
+          type: string
+          example: The requested resource could not be found.
+      required: [code, message]

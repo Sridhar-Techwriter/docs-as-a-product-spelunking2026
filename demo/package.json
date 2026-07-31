@@ -1,0 +1,14 @@
+{
+  "name": "orbit-platform-docs-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Docs-as-a-Product demo: OpenAPI spec -> automated developer docs for the fictional Orbit Platform API.",
+  "scripts": {
+    "lint": "redocly lint openapi/orbit-platform-api.yaml",
+    "docs:preview": "redocly preview-docs openapi/orbit-platform-api.yaml",
+    "docs:build": "redocly build-docs openapi/orbit-platform-api.yaml --output=dist/index.html"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.25.0"
+  }
+}

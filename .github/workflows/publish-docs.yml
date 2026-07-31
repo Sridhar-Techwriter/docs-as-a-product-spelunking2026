@@ -1,0 +1,75 @@
+name: Publish Orbit Platform API Docs
+
+# This is the heart of the "Docs-as-a-Product" demo: a change to the OpenAPI
+# spec is the ONLY manual step. Everything from linting to publishing the
+# public developer docs is automated from here.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "demo/openapi/**"
+      - "demo/redocly.yaml"
+      - ".github/workflows/publish-docs.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "demo/openapi/**"
+      - "demo/redocly.yaml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  lint:
+    name: Lint OpenAPI spec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install Redocly CLI
+        run: npm install --global @redocly/cli@latest
+      - name: Lint
+        working-directory: demo
+        run: redocly lint openapi/orbit-platform-api.yaml
+
+  build:
+    name: Build docs site
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install Redocly CLI
+        run: npm install --global @redocly/cli@latest
+      - name: Build static docs
+        working-directory: demo
+        run: redocly build-docs openapi/orbit-platform-api.yaml --output=dist/index.html
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: demo/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
