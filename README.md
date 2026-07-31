@@ -35,10 +35,15 @@ on every push to `main`)
 ```bash
 cd demo
 npm install
-npm run lint          # validate the OpenAPI spec
-npm run docs:preview  # local live-reloading docs preview (used for the live demo)
-npm run docs:build    # produce a static HTML docs site in demo/dist/
+npm run lint            # validate the OpenAPI spec
+npm run docs:preview    # local live-reloading docs preview (used for the live demo)
+npm run docs:build      # produce a static HTML docs site in demo/dist/
+npm run draft-endpoint  # auto-draft a new endpoint from a curl command + sample response
 ```
+
+The `draft-endpoint` script is a bonus "wow moment" — see
+[`talk/wow-moment-auto-draft.md`](talk/wow-moment-auto-draft.md) for what it
+does and how to demo it.
 
 ## How the pipeline works
 

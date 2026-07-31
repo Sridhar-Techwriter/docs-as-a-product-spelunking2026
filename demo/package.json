@@ -6,9 +6,11 @@
   "scripts": {
     "lint": "redocly lint openapi/orbit-platform-api.yaml",
     "docs:preview": "redocly preview-docs openapi/orbit-platform-api.yaml",
-    "docs:build": "redocly build-docs openapi/orbit-platform-api.yaml --output=dist/index.html"
+    "docs:build": "redocly build-docs openapi/orbit-platform-api.yaml --output=dist/index.html",
+    "draft-endpoint": "node scripts/draft-endpoint.js"
   },
   "devDependencies": {
-    "@redocly/cli": "^1.25.0"
+    "@redocly/cli": "^1.25.0",
+    "js-yaml": "^4.1.0"
   }
 }
