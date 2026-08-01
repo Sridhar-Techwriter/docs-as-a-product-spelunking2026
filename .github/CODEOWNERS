@@ -1,0 +1,11 @@
+# The OpenAPI spec is the single source of truth for the published API docs.
+# Any pull request that touches it must be reviewed by the technical writer
+# BEFORE it can merge — so the writer is looped in automatically, as a real
+# reviewer on the PR (and gets a GitHub email notification), instead of
+# finding out after the fact via a ticket or a Slack ping.
+#
+# Two usernames are listed because this repo is mirrored across two GitHub
+# instances with separate identities (GitHub Enterprise + github.com).
+# Each platform only recognizes its own handle; the other is harmlessly
+# ignored on that instance.
+/demo/openapi/  @sridhar-murugan @Sridhar-Techwriter

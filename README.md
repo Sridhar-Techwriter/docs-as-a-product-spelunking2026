@@ -17,8 +17,10 @@ for Spelunking 2026, Track 3 (Open Technology Platform).
 │   │   └── orbit-platform-api.yaml   # fictional "Orbit" Open Platform API spec
 │   ├── redocly.yaml       # Redocly CLI config (lint rules + docs theme)
 │   └── package.json       # lint / preview / build scripts
-└── .github/workflows/
-    └── publish-docs.yml   # CI/CD pipeline: lint -> build docs -> deploy to GitHub Pages
+└── .github/
+    ├── workflows/
+    │   └── publish-docs.yml   # CI/CD pipeline: lint -> build docs -> deploy to GitHub Pages
+    └── CODEOWNERS         # auto-requests the technical writer as reviewer on spec changes
 ```
 
 This repo *is* the proof of concept for the talk: a fictional OpenAPI spec
@@ -44,6 +46,17 @@ npm run draft-endpoint  # auto-draft a new endpoint from a curl command + sample
 The `draft-endpoint` script is a bonus "wow moment" — see
 [`talk/wow-moment-auto-draft.md`](talk/wow-moment-auto-draft.md) for what it
 does and how to demo it.
+
+## The writer is never cut out of the loop
+
+Automation updates the docs, but a human still decides whether they're
+*good*. [`.github/CODEOWNERS`](.github/CODEOWNERS) maps the OpenAPI spec to
+the technical writer's GitHub handle, so any pull request that changes it
+automatically requests them as a reviewer (a real GitHub email/
+notification — no ticket, no Slack ping) and, with one branch-protection
+setting enabled, blocks merging until they approve. See
+[`talk/reviewer-gate-codeowners.md`](talk/reviewer-gate-codeowners.md) for
+setup and how to demo it live.
 
 ## How the pipeline works
 
