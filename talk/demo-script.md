@@ -31,7 +31,7 @@ OpenAPI change from scratch under pressure.
    this is what makes the "instant update" moment work live, with no network dependency.
 
 4. Have three windows/tabs pre-arranged and ready to alt-tab between:
-   - **Editor** open to `demo/openapi/orbit-platform-api.yaml`, scrolled to the `Webhook` schema (around the `WebhookCreateRequest` section).
+   - **Editor** open to `demo/openapi/orbit-platform-api.yaml`, scrolled to the `Webhook` schema. Use `Cmd+F` and search for `enum: [active, paused]` to jump straight to the right spot every time.
    - **Browser tab A**: the live docs preview (local), scrolled/navigated to the `Webhook` schema section.
    - **Browser tab B**: the real, live deployed docs site — https://sridhar-techwriter.github.io/docs-as-a-product-spelunking2026/ — as your "in production" proof point. This is a genuine GitHub Actions pipeline that lints, builds, and deploys on every push; it is not a mockup.
    - Have `talk/demo-backup.png` (a screenshot of the end-state docs) open in a Preview window as a silent fallback if live editing breaks.
@@ -41,45 +41,29 @@ OpenAPI change from scratch under pressure.
 ## On stage: step by step
 
 **Step 1 — Orient the audience (10s)**
-Say: "Here's the current published docs for our fictional Orbit Platform API — this is what a partner developer sees today." Point at the `Webhook` object in the docs preview tab. Show it has no retry behavior documented.
+Say: "Here's the current published docs for our fictional Orbit Platform API — this is what a partner developer sees today." Point at the `Webhook` object in the docs preview tab. Show it has no payload-signing/security behavior documented yet.
 
-**Step 2 — Make the change (60–90s)**
-Switch to the editor. Find the `Webhook` schema in `demo/openapi/orbit-platform-api.yaml`. Paste in the following block as a new property inside `Webhook.properties` (right after `status`):
-
-```yaml
-        retryPolicy:
-          $ref: "#/components/schemas/WebhookRetryPolicy"
-```
-
-Then scroll to the `components.schemas` section and paste in this new schema, anywhere alongside the other schemas (e.g. right after the `Webhook` schema block):
+**Step 2 — Make the change (30–60s)**
+Switch to the editor. Find the `Webhook` schema in `demo/openapi/orbit-platform-api.yaml` (search `Cmd+F` for `enum: [active, paused]`). Click at the **end of the line** that says `example: active` (right after the word `active`), press Enter, and paste in this single block — it's deliberately just one paste, one location, to avoid indentation mix-ups on stage:
 
 ```yaml
-    WebhookRetryPolicy:
-      type: object
-      description: |
-        Controls how Orbit retries webhook delivery after a failed attempt.
-        Added live during the Spelunking 2026 "Docs-as-a-Product" demo —
-        this text reached this page with zero manual doc edits.
-      properties:
-        maxAttempts:
-          type: integer
-          example: 5
-        backoffSeconds:
-          type: integer
-          description: Delay before the next retry attempt, in seconds.
-          example: 30
-        deadLetterUrl:
+        signingSecret:
           type: string
-          format: uri
-          description: Optional URL that receives permanently failed deliveries.
-          example: https://acme.example.com/hooks/orbit/dead-letter
-      required: [maxAttempts, backoffSeconds]
+          description: |
+            A secret used to sign every webhook payload with an HMAC-SHA256
+            signature, sent in the `Orbit-Signature` header, so partners can
+            verify a delivery genuinely came from Orbit. Added live during
+            the Spelunking 2026 "Docs-as-a-Product" demo — this text reached
+            this page with zero manual doc edits.
+          example: whsec_9f3a1c2b8e77
 ```
 
-Say while typing/pasting: "I'm an engineer. I just shipped retry support for webhooks. The *only* thing I'm touching is this spec file — I am not opening a docs tool, a CMS, or pinging a technical writer."
+**Indentation check:** the pasted block should line up so that `signingSecret:` starts at the exact same position as `status:` and `retryPolicy:` just above it in the file (8 spaces in). If your editor auto-indented it differently after you pressed Enter, just use Tab/Backspace to nudge it left or right until it visually lines up with `retryPolicy:`.
+
+Say while typing/pasting: "I'm an engineer. I just shipped webhook payload signing. The *only* thing I'm touching is this spec file — I am not opening a docs tool, a CMS, or pinging a technical writer."
 
 **Step 3 — Save and reveal (20–30s)**
-Save the file. Switch to the browser preview tab. It should auto-refresh within a second or two, now showing the `retryPolicy` field on `Webhook` and the new `WebhookRetryPolicy` schema with your description text rendered.
+Save the file. Switch to the browser preview tab. It should auto-refresh within a second or two, now showing the new `signingSecret` field on `Webhook` with your description text rendered.
 
 Say: "That's it. That's the whole 'documentation update.' No writer typed a word. No ticket got filed. The description you're reading came from the same file the engineer just edited."
 
