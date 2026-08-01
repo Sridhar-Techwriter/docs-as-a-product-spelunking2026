@@ -804,7 +804,30 @@ components:
               - `paused` — delivery is temporarily suspended, but the subscription is retained.
           enum: [active, paused]
           example: active
+        retryPolicy:
+          $ref: "#/components/schemas/WebhookRetryPolicy"
       required: [id, partnerId, targetUrl, eventTypes, status]
+
+    WebhookRetryPolicy:
+      type: object
+      description: |
+        Controls how Orbit retries webhook delivery after a failed attempt.
+        Added live during the Spelunking 2026 "Docs-as-a-Product" demo —
+        this text reached this page with zero manual doc edits.
+      properties:
+        maxAttempts:
+          type: integer
+          example: 5
+        backoffSeconds:
+          type: integer
+          description: Delay before the next retry attempt, in seconds.
+          example: 30
+        deadLetterUrl:
+          type: string
+          format: uri
+          description: Optional URL that receives permanently failed deliveries.
+          example: https://acme.example.com/hooks/orbit/dead-letter
+      required: [maxAttempts, backoffSeconds]
 
     WebhookCreateRequest:
       type: object
