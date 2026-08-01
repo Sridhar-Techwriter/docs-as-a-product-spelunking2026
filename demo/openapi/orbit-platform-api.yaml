@@ -461,6 +461,10 @@ paths:
                     targetUrl: https://acme.example.com/hooks/orbit
                     eventTypes: ["worker.hired", "job.posted"]
                     status: active
+                    retryPolicy:
+                      maxAttempts: 5
+                      backoffSeconds: 30
+                      deadLetterUrl: https://acme.example.com/hooks/orbit/dead-letter
         "400":
           description: |
             The request body was invalid. Common causes:
@@ -579,6 +583,10 @@ paths:
                     targetUrl: https://acme.example.com/hooks/orbit
                     eventTypes: ["worker.hired", "job.posted"]
                     status: paused
+                    retryPolicy:
+                      maxAttempts: 5
+                      backoffSeconds: 30
+                      deadLetterUrl: https://acme.example.com/hooks/orbit/dead-letter
         "401":
           description: The access token is missing, expired, or invalid.
           content:
