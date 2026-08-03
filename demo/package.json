@@ -4,10 +4,10 @@
   "private": true,
   "description": "Docs-as-a-Product demo: OpenAPI spec -> automated developer docs for the fictional Orbit Platform API.",
   "scripts": {
-    "lint": "redocly lint openapi/orbit-platform-api.yaml",
-    "docs:preview": "nodemon --watch openapi/orbit-platform-api.yaml --legacy-watch --delay 300ms --exec \"redocly preview-docs openapi/orbit-platform-api.yaml\"",
-    "docs:preview:basic": "redocly preview-docs openapi/orbit-platform-api.yaml",
-    "docs:build": "redocly build-docs openapi/orbit-platform-api.yaml --output=dist/index.html",
+    "lint": "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true redocly lint openapi/orbit-platform-api.yaml",
+    "docs:preview": "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true nodemon --watch openapi/orbit-platform-api.yaml --legacy-watch --delay 300ms --exec \"REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true redocly preview-docs openapi/orbit-platform-api.yaml\"",
+    "docs:preview:basic": "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true redocly preview-docs openapi/orbit-platform-api.yaml",
+    "docs:build": "REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true redocly build-docs openapi/orbit-platform-api.yaml --output=dist/index.html",
     "draft-endpoint": "node scripts/draft-endpoint.js"
   },
   "devDependencies": {
