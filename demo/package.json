@@ -5,12 +5,14 @@
   "description": "Docs-as-a-Product demo: OpenAPI spec -> automated developer docs for the fictional Orbit Platform API.",
   "scripts": {
     "lint": "redocly lint openapi/orbit-platform-api.yaml",
-    "docs:preview": "redocly preview-docs openapi/orbit-platform-api.yaml",
+    "docs:preview": "nodemon --watch openapi/orbit-platform-api.yaml --legacy-watch --delay 300ms --exec \"redocly preview-docs openapi/orbit-platform-api.yaml\"",
+    "docs:preview:basic": "redocly preview-docs openapi/orbit-platform-api.yaml",
     "docs:build": "redocly build-docs openapi/orbit-platform-api.yaml --output=dist/index.html",
     "draft-endpoint": "node scripts/draft-endpoint.js"
   },
   "devDependencies": {
     "@redocly/cli": "^1.25.0",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "nodemon": "^3.1.14"
   }
 }
