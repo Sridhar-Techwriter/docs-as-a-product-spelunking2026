@@ -621,6 +621,84 @@ paths:
                     code: webhook_already_paused
                     message: "Webhook 'whk_3a90' is already paused."
 
+  /webhooks/{webhookId}/test:
+    post:
+      operationId: testWebhook
+      tags: [Webhooks]
+      summary: Test a Webhook Subscription
+      description: |
+        Sends a sample event payload to the webhook's `targetUrl`, so a
+        partner can verify their integration works correctly without
+        waiting for a real event to occur. Added live during the
+        Spelunking 2026 "Docs-as-a-Product" demo — this entire page
+        reached the public docs with zero manual doc edits.
+
+        The webhook must be `active` — testing a `paused` webhook returns
+        a `409` error.
+      x-codeSamples:
+        - lang: Shell
+          label: cURL
+          source: |
+            curl -X POST https://api.example-orbit.workday.com/v1/webhooks/whk_3a90/test \
+              -H "Authorization: Bearer $ORBIT_ACCESS_TOKEN"
+      parameters:
+        - $ref: "#/components/parameters/WebhookId"
+      responses:
+        "200":
+          description: The test request completed. Check `delivered` to see whether the target actually accepted it.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  delivered:
+                    type: boolean
+                    description: Whether the target responded with a `2xx` status within 10 seconds.
+                    example: true
+                  statusCode:
+                    type: integer
+                    description: The HTTP status code returned by `targetUrl` for this test attempt.
+                    example: 200
+                  eventType:
+                    type: string
+                    description: The event type used to build the sample test payload, drawn from the webhook's `eventTypes`.
+                    example: worker.hired
+                  attemptedAt:
+                    type: string
+                    format: date-time
+                    description: The date and time the test delivery was attempted, in ISO 8601 / RFC 3339 format (UTC).
+                    example: "2026-01-15T09:31:00Z"
+                required: [delivered, statusCode, eventType, attemptedAt]
+              examples:
+                Delivered:
+                  summary: Target accepted the test event
+                  value:
+                    delivered: true
+                    statusCode: 200
+                    eventType: worker.hired
+                    attemptedAt: "2026-01-15T09:31:00Z"
+        "404":
+          description: No webhook subscription exists with the given `webhookId`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                NotFound:
+                  value:
+                    code: webhook_not_found
+                    message: "No webhook found with id 'whk_3a90'."
+        "409":
+          description: The webhook is paused, so it cannot be tested.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                Paused:
+                  value:
+                    code: webhook_paused
+                    message: "Webhook 'whk_3a90' is paused. Resume it before testing."
   /events:
     get:
       operationId: listEvents
